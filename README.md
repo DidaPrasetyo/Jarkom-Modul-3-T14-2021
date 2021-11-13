@@ -268,3 +268,25 @@ visible_hostname Water7
 
 http_access allow all
 ```
+
+## 9. Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy
+
+- membuat user (Water7)
+```
+htpasswd -cbm /etc/squid/passwd luffybelikapalTI14 luffy_TI14
+htpasswd -bm /etc/squid/passwd zorobelikapalTI14 zoro_TI14
+```
+
+- `/etc/squid/squid.conf` (Water7)
+```
+http_port 5000
+visible_hostname Water7
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS
+```
