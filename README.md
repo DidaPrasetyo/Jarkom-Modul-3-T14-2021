@@ -290,3 +290,57 @@ auth_param basic casesensitive on
 acl USERS proxy_auth REQUIRED
 http_access allow USERS
 ```
+
+## 10. Transaksi jual beli tidak dilakukan setiap hari, oleh karena itu akses internet dibatasi hanya dapat diakses setiap hari Senin-Kamis pukul 07.00-11.00 dan setiap hari Selasa-Jum’at pukul 17.00-03.00 keesokan harinya (sampai Sabtu pukul 03.00)
+
+- `/etc/squid/acl.conf` (Water7)
+```
+acl AVAILABLE_WORKING time MTWH 07:00-11:00
+acl AVAILABLE_WORKING time TWHF 17:00-23:59
+acl AVAILABLE_WORKING time WHFA 00:00-03:00
+```
+
+- `/etc/squid/squid.conf` (Water7)
+```
+include /etc/squid/acl.conf
+
+http_port 5000
+http_access allow AVAILABLE_WORKING
+visible_hostname Water7
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS
+
+http_access deny all
+```
+
+## 11 Agar transaksi bisa lebih fokus berjalan, maka dilakukan redirect website agar mudah mengingat website transaksi jual beli kapal. Setiap mengakses google.com, akan diredirect menuju super.franky.yyy.com dengan website yang sama pada soal shift modul 2. Web server super.franky.yyy.com berada pada node Skypie
+
+- `/etc/squid/squid.conf` (Water7)
+```
+include /etc/squid/acl.conf
+
+http_port 5000
+http_access allow AVAILABLE_WORKING
+visible_hostname Water7
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS
+
+acl lan src 192.218.3.0/24 192.218.1.0/24
+acl badsites dstdomain google.com
+deny_info http://super.franky.TI14.com/ lan
+http_reply_access deny badsites lan
+dns_nameservers 192.218.2.2
+http_access deny all
+```
