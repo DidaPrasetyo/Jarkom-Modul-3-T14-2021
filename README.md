@@ -1,4 +1,4 @@
-# Jarkom-Modul-2-T14-2021
+# Jarkom-Modul-3-T14-2021
 
 Anggota Kelompok :
 - Dida Prasetyo Rahmat - 05311940000019 
@@ -233,6 +233,10 @@ host Jipangu {
     hardware ethernet 6a:29:cd:ad:5a:db;
     fixed-address 192.218.3.69;
 }
+```
+Lalu jalankan command berikut pada setiap client
+```
+export http_proxy="http://jualbelikapal.TI14.com:5000/"
 ```
 ## 8. Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi.
 
