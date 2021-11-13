@@ -234,3 +234,37 @@ host Jipangu {
     fixed-address 192.218.3.69;
 }
 ```
+## 8. Loguetown digunakan sebagai client Proxy agar transaksi jual beli dapat terjamin keamanannya, juga untuk mencegah kebocoran data transaksi.
+
+Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000
+
+- `/etc/bind/named.conf.local` (EniesLobby)
+```
+zone "jualbelikapal.TI14.com" {
+    type master;
+    file "/etc/bind/kaizoku/jualbelikapal.TI14.com";
+};
+```
+
+- `/etc/bind/kaizoku/jualbelikapal.TI14.com` (EniesLobby)
+```
+$TTL    604800
+@       IN      SOA     jualbelikapal.TI14.com. root.jualbelikapal.TI14.com. (
+                        2021110901      ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      jualbelikapal.TI14.com.
+@       IN      A       192.218.2.3
+www     IN      CNAME   jualbelikapal.TI14.com.
+```
+
+- `/etc/squid/squid.conf` (Water7)
+```
+http_port 5000
+visible_hostname Water7
+
+http_access allow all
+```
